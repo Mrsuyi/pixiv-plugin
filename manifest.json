@@ -4,11 +4,12 @@
   "version": "1.0",
   "manifest_version": 3,
   "permissions": [
-    "tabs",
-    "storage",
     "activeTab",
+    "history",
     "scripting",
-    "history"
+    "storage",
+    "tabs",
+    "webRequest"
   ],
   "host_permissions": [
     "https://*.pixiv.net/",
