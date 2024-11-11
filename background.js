@@ -9,6 +9,7 @@ let urls_404 = new Set();
 // Filter out visited URLs.
 // Save URLs to local storage and return.
 const syncUrls = async (id, new_urls) => {
+  console.log('sync URLs with id: ' + id);
   let old_urls = (await chrome.storage.sync.get('urls')).urls || [];
   if (id < msg_id) return [];
 
@@ -27,6 +28,8 @@ const syncUrls = async (id, new_urls) => {
   if (id < msg_id) return [];
 
   await chrome.storage.sync.set({urls: res});
+  console.log('synced URLs');
+  console.log(res);
   return res;
 };
 
@@ -74,6 +77,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
           let a = img.getElementsByTagName('a')[0];
           urls.push(a.href);
         }
+        console.log('images from container');
         console.log(urls);
         chrome.runtime.sendMessage({urls: urls});
       };
