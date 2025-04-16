@@ -69,7 +69,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       let get_urls = async () => {
         console.log('Get URLs from image container');
         let imgs = document.getElementsByClassName(
-            'sc-9y4be5-2 sc-9y4be5-3 sc-1wcj34s-1 kFAPOq JaPty');
+            'sc-7d21cb21-2 sc-7d21cb21-3 sc-65a6134-1 fcCWti fvnAsy');
         let urls = [];
 
         for (let i = 0; i < imgs.length; ++i) {
@@ -85,7 +85,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       // Observe image container and try get_urls.
       let cnt = 100;
       let check_page = async () => {
-        let img_hub = document.getElementsByClassName('sc-jgyytr-0 buukZm');
+        let img_hub = document.getElementsByClassName('sc-7d21cb21-1 jELUak');
         if (img_hub.length == 0) {
           if (--cnt > 0) {
             setTimeout(check_page, 100);
