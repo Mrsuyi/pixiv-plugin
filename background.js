@@ -10,7 +10,7 @@ let urls_404 = new Set();
 // Save URLs to local storage and return.
 const syncUrls = async (id, new_urls) => {
   console.log('sync URLs with id: ' + id);
-  let old_urls = (await chrome.storage.sync.get('urls')).urls || [];
+  const old_urls = (await chrome.storage.sync.get('urls')).urls || [];
   if (id < msg_id) return [];
 
   urls = new Set([...new_urls, ...old_urls]);
@@ -21,7 +21,7 @@ const syncUrls = async (id, new_urls) => {
   // Check if visited.
   for (url of urls) {
     if (id < msg_id) return [];
-    let visits = await chrome.history.getVisits({url: url});
+    const visits = await chrome.history.getVisits({url: url});
     if (visits.length == 0) res.push(url);
   }
   chrome.action.setBadgeText({text: res.length.toString()});
@@ -34,7 +34,7 @@ const syncUrls = async (id, new_urls) => {
 };
 
 chrome.action.onClicked.addListener(async (tab) => {
-  let urls = await syncUrls(Number.MAX_SAFE_INTEGER, []);
+  const urls = await syncUrls(Number.MAX_SAFE_INTEGER, []);
   chrome.windows.create({
     focused: true,
     state: 'normal',
@@ -65,16 +65,14 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   chrome.scripting.executeScript({
     target: {tabId: tab.id},
     func: async () => {
-      // Get URLs from the image container.
-      let get_urls = async () => {
-        console.log('Get URLs from image container');
-        let imgs = document.getElementsByClassName(
-            'sc-7d21cb21-2 sc-7d21cb21-3 sc-65a6134-1 fcCWti fvnAsy');
-        let urls = [];
+      // Get URLs from the image container <ul>.
+      let img_hub = null; 
 
-        for (let i = 0; i < imgs.length; ++i) {
-          let img = imgs[i];
-          let a = img.getElementsByTagName('a')[0];
+      const get_urls = async () => {
+        console.log('Get URLs from image container');
+        let urls = [];
+        for (const img of img_hub.children) {
+          const a = img.getElementsByTagName('a')[0];
           urls.push(a.href);
         }
         console.log('images from container');
@@ -84,9 +82,9 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
       // Observe image container and try get_urls.
       let cnt = 100;
-      let check_page = async () => {
-        let img_hub = document.getElementsByClassName('sc-7d21cb21-1 jELUak');
-        if (img_hub.length == 0) {
+      const check_page = async () => {
+        img_hub = document.getElementsByClassName('sc-7d21cb21-1 jELUak')?.[0];
+        if (!img_hub) {
           if (--cnt > 0) {
             setTimeout(check_page, 100);
           } else {
@@ -97,9 +95,9 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
         await get_urls();
 
         // Add observer in case the container updates later.
-        let observer = new MutationObserver(get_urls);
-        let config = {attributes: true, childList: true, subtree: true};
-        observer.observe(img_hub[0], config);
+        const observer = new MutationObserver(get_urls);
+        const config = {attributes: true, childList: true, subtree: true};
+        observer.observe(img_hub, config);
       };
       check_page();
     },
