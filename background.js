@@ -68,6 +68,17 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       // Get URLs from the image container <ul>.
       let img_hub = null; 
 
+      // Get the <ul> that contains all images.
+      const getImgHub = () => {
+        const uls = document.getElementsByTagName('ul');
+        for (const ul of uls) {
+          if (ul.getElementsByTagName('li').length > 30) {
+            return ul;
+          }
+        }
+        return null;
+      };
+
       const get_urls = async () => {
         console.log('Get URLs from image container');
         let urls = [];
@@ -83,7 +94,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       // Observe image container and try get_urls.
       let cnt = 100;
       const check_page = async () => {
-        img_hub = document.getElementsByClassName('sc-7d21cb21-1 jELUak')?.[0];
+        img_hub = getImgHub();
         if (!img_hub) {
           if (--cnt > 0) {
             setTimeout(check_page, 100);
